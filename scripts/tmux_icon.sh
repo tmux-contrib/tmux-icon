@@ -129,12 +129,12 @@ _tmux_icon_get_flag_command() {
 		# Escape special regex characters
 		local escaped_flag="$flag"
 		case "$flag" in
-			"*") escaped_flag="\\*" ;;
-			"-") escaped_flag="\\-" ;;
+		"*") escaped_flag="\\*" ;;
+		"-") escaped_flag="\\-" ;;
 		esac
 
 		# Use regex pattern matching to check if flag is present in #F
-		# Add a space after each icon for better visual separation
+		# Add a space after each icon for separation
 		echo -n "#{?#{m/r:$escaped_flag,#F},$icon ,}"
 		shift
 		i=$((i + 1))
@@ -162,23 +162,31 @@ _tmux_icon_interpolate() {
 	local content="$1"
 
 	# Handle window index (#I)
-	local window_icons="$(_tmux_icon_get_window_icons)"
-	if [[ -n "$window_icons" ]]; then
+	local window_index_icons
+	window_index_icons="$(_tmux_icon_get_window_icons)"
+	# window index command
+	local window_index_command
+
+	if [[ -n "$window_index_icons" ]]; then
 		local -a icons
 		# shellcheck disable=SC2086
-		read -ra icons <<<$window_icons
-		local command="$(_tmux_icon_get_command "I" "${icons[@]}")"
-		content="${content//$_TMUX_ICON_PATTERN_WINDOW/$command}"
+		read -ra icons <<<$window_index_icons
+		window_index_command="$(_tmux_icon_get_command "I" "${icons[@]}")"
+		content="${content//$_TMUX_ICON_PATTERN_WINDOW/$window_index_command}"
 	fi
 
 	# Handle window flags (#F)
-	local flag_icons="$(_tmux_icon_get_flag_icons)"
-	if [[ -n "$flag_icons" ]]; then
+	local window_flag_icons
+	window_flag_icons="$(_tmux_icon_get_flag_icons)"
+	# window index command
+	local window_flag_command
+
+	if [[ -n "$window_flag_icons" ]]; then
 		local -a icons
 		# shellcheck disable=SC2086
-		read -ra icons <<<$flag_icons
-		local command="$(_tmux_icon_get_flag_command "${icons[@]}")"
-		content="${content//$_TMUX_ICON_PATTERN_FLAG/$command}"
+		read -ra icons <<<$window_flag_icons
+		window_flag_command="$(_tmux_icon_get_flag_command "${icons[@]}")"
+		content="${content//$_TMUX_ICON_PATTERN_FLAG/$window_flag_command}"
 	fi
 
 	echo "$content"
