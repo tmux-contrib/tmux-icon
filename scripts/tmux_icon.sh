@@ -3,13 +3,16 @@
 # Window index pattern to replace with custom icons
 readonly _TMUX_ICON_PATTERN_WINDOW="#I"
 
+# Window flag pattern to replace with custom icons
+readonly _TMUX_ICON_PATTERN_FLAG="#F"
+
 # Get custom icon array from user configuration.
 #
-# Retrieves the @window-icons option and parses it into an array.
+# Retrieves the @window-index-icons option and parses it into an array.
 # If not set, returns empty string (plugin will be disabled).
 #
 # Users can provide any space-separated characters they want:
-#   set -g @window-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
+#   set -g @window-index-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
 #
 # Globals:
 #   None
@@ -23,7 +26,36 @@ _tmux_icon_get_window_icons() {
 	local icons
 
 	# Get user configuration with empty default (opt-in behavior)
-	icons="$(_tmux_get_option "@window-icons" "")"
+	icons="$(_tmux_get_option "@window-index-icons" "")"
+
+	# Return the string as-is (caller will parse into array)
+	echo "$icons"
+}
+
+# Get custom icon array for window flags from user configuration.
+#
+# Retrieves the @window-flag-icons option and parses it into an array.
+# If not set, returns empty string (plugin will be disabled).
+#
+# Users can provide space-separated characters for 7 window flags in order:
+#   * (current), - (last), # (activity), ! (bell), ~ (silence), M (marked), Z (zoomed)
+#
+# Example:
+#   set -g @window-flag-icons "󰖯 󰖰 󰀨 󰂞 󰂛 󰃀 󰍉"
+#
+# Globals:
+#   None
+# Arguments:
+#   None
+# Outputs:
+#   Space-separated array of icon characters, or empty string
+# Returns:
+#   0 on success
+_tmux_icon_get_flag_icons() {
+	local icons
+
+	# Get user configuration with empty default (opt-in behavior)
+	icons="$(_tmux_get_option "@window-flag-icons" "")"
 
 	# Return the string as-is (caller will parse into array)
 	echo "$icons"
@@ -63,14 +95,49 @@ _tmux_icon_get_command() {
 	done
 }
 
-# Interpolate #I patterns with custom icon format strings.
+# Generate a tmux conditional format command for window flags.
 #
-# Takes a string containing tmux format patterns and replaces #I (window
-# index) with conditional format strings that display custom icons.
-# If @window-icons is not configured (empty), returns content unchanged.
+# Creates a series of tmux conditionals that map window flag characters
+# to custom icons. Window flags include:
+#   * (current), - (last), # (activity), ! (bell), ~ (silence), M (marked), Z (zoomed)
+#
+# The output format is:
+#   #{?#{==:#F,*},icon0,}#{?#{==:#F,-},icon1,}#{?#{==:#F,#},icon2,}...
+#
+# Globals:
+#   None
+# Arguments:
+#   $@ - Array of icon characters to map to flags (in standard flag order)
+# Outputs:
+#   A tmux conditional format string
+# Returns:
+#   0 on success
+_tmux_icon_get_flag_command() {
+	local flags=("*" "-" "#" "!" "~" "M" "Z")
+	local -i i=0
+
+	for flag in "${flags[@]}"; do
+		local icon="${1:-}"
+		if [[ -z "$icon" ]]; then
+			break
+		fi
+		echo -n "#{?#{==:#F,$flag},$icon,}"
+		shift
+		i=$((i + 1))
+	done
+}
+
+# Interpolate #I and #F patterns with custom icon format strings.
+#
+# Takes a string containing tmux format patterns and replaces:
+# - #I (window index) with conditional format strings for window numbers (from @window-index-icons)
+# - #F (window flags) with conditional format strings for flag characters (from @window-flag-icons)
+#
+# If the corresponding option is not configured, that pattern remains unchanged.
 #
 # Globals:
 #   _TMUX_ICON_PATTERN_WINDOW - Pattern for window index (#I)
+#   _TMUX_ICON_PATTERN_FLAG - Pattern for window flags (#F)
 # Arguments:
 #   $1 - Content string to interpolate
 # Outputs:
@@ -79,27 +146,26 @@ _tmux_icon_get_command() {
 #   0 on success
 _tmux_icon_interpolate() {
 	local content="$1"
-	local icons
-	local command
 
-	# Get the icon array based on user's configuration
-	icons="$(_tmux_icon_get_window_icons)"
-
-	# Skip interpolation if not configured (opt-in behavior)
-	if [[ -z "$icons" ]]; then
-		echo "$content"
-		return 0
+	# Handle window index (#I)
+	local window_icons="$(_tmux_icon_get_window_icons)"
+	if [[ -n "$window_icons" ]]; then
+		local -a icons
+		# shellcheck disable=SC2086
+		read -ra icons <<<$window_icons
+		local command="$(_tmux_icon_get_command "I" "${icons[@]}")"
+		content="${content//$_TMUX_ICON_PATTERN_WINDOW/$command}"
 	fi
 
-	# Parse space-separated string into array
-	# shellcheck disable=SC2086
-	read -ra icons <<<$icons
-
-	# Generate conditional format command for window index
-	command="$(_tmux_icon_get_command "I" "${icons[@]}")"
-
-	# Replace #I pattern with the conditional format string
-	content="${content//$_TMUX_ICON_PATTERN_WINDOW/$command}"
+	# Handle window flags (#F)
+	local flag_icons="$(_tmux_icon_get_flag_icons)"
+	if [[ -n "$flag_icons" ]]; then
+		local -a icons
+		# shellcheck disable=SC2086
+		read -ra icons <<<$flag_icons
+		local command="$(_tmux_icon_get_flag_command "${icons[@]}")"
+		content="${content//$_TMUX_ICON_PATTERN_FLAG/$command}"
+	fi
 
 	echo "$content"
 }

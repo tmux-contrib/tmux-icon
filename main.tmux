@@ -2,29 +2,37 @@
 
 # tmux-icon plugin entry point.
 #
-# This plugin replaces #I (window index) patterns in tmux status bar
-# options with custom icons (including nerd font icons).
+# This plugin replaces #I (window index) and #F (window flags) patterns
+# in tmux status bar options with custom icons (including nerd font icons).
 #
 # Configuration:
-#   set -g @window-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
+#   set -g @window-index-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
+#   set -g @window-flag-icons "󰖯 󰖰 󰀨 󰂞 󰂛 󰃀 󰍉"
 #
-# The @window-icons option accepts a space-separated string of custom
+# The @window-index-icons option accepts a space-separated string of custom
 # characters to use for window numbers 0-9. If not set, the plugin
+# does nothing (opt-in behavior).
+#
+# The @window-flag-icons option accepts a space-separated string of custom
+# characters for window flags (*, -, #, !, ~, M, Z). If not set, the plugin
 # does nothing (opt-in behavior).
 #
 # Examples:
 #   # Circled numbers
-#   set -g @window-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
+#   set -g @window-index-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
 #
 #   # Square nerd font icons
-#   set -g @window-icons "󰎣 󰎦 󰎩 󰎬 󰎮 󰎰 󰎵 󰎸 󰎻 󰎾"
+#   set -g @window-index-icons "󰎣 󰎦 󰎩 󰎬 󰎮 󰎰 󰎵 󰎸 󰎻 󰎾"
 #
 #   # Any custom characters
-#   set -g @window-icons "A B C D E F G H I J"
+#   set -g @window-index-icons "A B C D E F G H I J"
+#
+#   # Window flags
+#   set -g @window-flag-icons "󰖯 󰖰 󰀨 󰂞 󰂛 󰃀 󰍉"
 #
 # Usage:
-#   Before: set -g window-status-format "#I:#W"
-#   After:  Window numbers display with your custom icons
+#   Before: set -g window-status-format "#I:#W #F"
+#   After:  Window numbers and flags display with your custom icons
 
 _tmux_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
