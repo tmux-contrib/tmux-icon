@@ -15,7 +15,8 @@
 #
 # The @window-flag-icons option accepts a space-separated string of custom
 # characters for window flags (*, -, #, !, ~, M, Z). If not set, the plugin
-# does nothing (opt-in behavior).
+# does nothing (opt-in behavior). Multiple flags are displayed with spacing
+# between icons for better readability.
 #
 # Examples:
 #   # Circled numbers

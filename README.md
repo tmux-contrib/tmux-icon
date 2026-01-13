@@ -81,18 +81,21 @@ set -g window-status-current-format " #I: #W #F "
 
 ### Multiple Flags
 
-Windows can have multiple flags simultaneously (e.g., a window that is both current and zoomed will have `*Z`). The plugin handles this by displaying all applicable flag icons:
+Windows can have multiple flags simultaneously (e.g., a window that is both current and zoomed will have `*Z`). The plugin handles this by displaying all applicable flag icons with spacing between them for better readability:
 
 ```tmux
 # Example: Window with multiple flags
 # If #F = "*Z" (current + zoomed)
-# Output: 󰖯󰍉 (both current icon and zoom icon)
+# Output: 󰖯 󰍉 (both current icon and zoom icon with space)
 
 # If #F = "-#" (last window + activity)
-# Output: 󰖰󰀨 (both last icon and activity icon)
+# Output: 󰖰 󰀨 (both last icon and activity icon with space)
+
+# If #F = "*#!" (current + activity + bell)
+# Output: 󰖯 󰀨 󰂞 (all three icons with spacing)
 ```
 
-Each flag character that appears in `#F` will display its corresponding icon, allowing you to see all active states at once.
+Each flag character that appears in `#F` will display its corresponding icon followed by a space, allowing you to see all active states at once with clear visual separation.
 
 ### Combined Window Numbers and Flags
 

@@ -98,15 +98,15 @@ _tmux_icon_get_command() {
 # Generate a tmux conditional format command for window flags.
 #
 # Creates a series of tmux conditionals that check if each flag character
-# appears in #F and displays the corresponding icon. Window flags include:
+# appears in #F and displays the corresponding icon with spacing. Window flags include:
 #   * (current), - (last), # (activity), ! (bell), ~ (silence), M (marked), Z (zoomed)
 #
 # This uses pattern matching instead of exact equality, so multiple flags
 # can be displayed simultaneously. For example, if #F is "*Z" (current + zoomed),
-# both the * icon and Z icon will be displayed.
+# both the * icon and Z icon will be displayed with a space between them.
 #
 # The output format is:
-#   #{?#{m/r:\\*,#F},icon0,}#{?#{m/r:-,#F},icon1,}#{?#{m/r:#,#F},icon2,}...
+#   #{?#{m/r:\\*,#F},icon0 ,}#{?#{m/r:-,#F},icon1 ,}#{?#{m/r:#,#F},icon2 ,}...
 #
 # Globals:
 #   None
@@ -134,7 +134,8 @@ _tmux_icon_get_flag_command() {
 		esac
 
 		# Use regex pattern matching to check if flag is present in #F
-		echo -n "#{?#{m/r:$escaped_flag,#F},$icon,}"
+		# Add a space after each icon for better visual separation
+		echo -n "#{?#{m/r:$escaped_flag,#F},$icon ,}"
 		shift
 		i=$((i + 1))
 	done
