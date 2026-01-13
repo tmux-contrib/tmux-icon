@@ -126,11 +126,12 @@ _tmux_icon_get_flag_command() {
 			break
 		fi
 
-		# Escape special regex characters
+		# Escape special characters for both regex and tmux format
 		local escaped_flag="$flag"
 		case "$flag" in
 		"*") escaped_flag="\\*" ;;
 		"-") escaped_flag="\\-" ;;
+		"#") escaped_flag="##" ;;  # In tmux format strings, ## represents literal #
 		esac
 
 		# Use regex pattern matching to check if flag is present in #F
