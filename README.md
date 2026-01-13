@@ -86,16 +86,16 @@ Windows can have multiple flags simultaneously (e.g., a window that is both curr
 ```tmux
 # Example: Window with multiple flags
 # If #F = "*Z" (current + zoomed)
-# Output: 󰖯 󰍉 (both current icon and zoom icon with space)
+# Output: 󰖯 󰍉 (both icons with space between)
 
 # If #F = "-#" (last window + activity)
-# Output: 󰖰 󰀨 (both last icon and activity icon with space)
+# Output: 󰖰 󰀨 (both icons with space between)
 
 # If #F = "*#!" (current + activity + bell)
-# Output: 󰖯 󰀨 󰂞 (all three icons with spacing)
+# Output: 󰖯 󰀨 󰂞 (all three icons with spaces between)
 ```
 
-Each flag character that appears in `#F` will display its corresponding icon followed by a space, allowing you to see all active states at once with clear visual separation.
+Each flag character that appears in `#F` will display its corresponding icon. Spaces are automatically added between icons, but not before the first or after the last icon, ensuring clean formatting.
 
 ### Combined Window Numbers and Flags
 

@@ -105,8 +105,8 @@ _tmux_icon_get_command() {
 # can be displayed simultaneously. For example, if #F is "*Z" (current + zoomed),
 # both the * icon and Z icon will be displayed with a space between them.
 #
-# The output format is:
-#   #{?#{m/r:\\*,#F},icon0 ,}#{?#{m/r:-,#F},icon1 ,}#{?#{m/r:#,#F},icon2 ,}...
+# The output is wrapped with tmux string substitutions to trim trailing/leading spaces,
+# ensuring spaces only appear between icons, not before the first or after the last.
 #
 # Globals:
 #   None
@@ -119,6 +119,9 @@ _tmux_icon_get_command() {
 _tmux_icon_get_flag_command() {
 	local flags=("*" "-" "#" "!" "~" "M" "Z")
 	local -i i=0
+
+	# Start with trimming pattern to remove trailing space
+	echo -n "#{s/ $//:#{s/^ //:#{s/  / /g:"
 
 	for flag in "${flags[@]}"; do
 		local icon="${1:-}"
@@ -134,12 +137,14 @@ _tmux_icon_get_flag_command() {
 		"#") escaped_flag="##" ;;  # In tmux format strings, ## represents literal #
 		esac
 
-		# Use regex pattern matching to check if flag is present in #F
-		# Add a space after each icon for separation
+		# Add space after each icon for separation
 		echo -n "#{?#{m/r:$escaped_flag,#F},$icon ,}"
 		shift
 		i=$((i + 1))
 	done
+
+	# Close the trimming pattern
+	echo -n "}}}"
 }
 
 # Interpolate #I and #F patterns with custom icon format strings.
