@@ -4,13 +4,13 @@ A tmux plugin that displays custom icons (including nerd fonts) for window numbe
 
 ## Installation
 
-```tmux
-# configure the tmux plugins manager
-set -g @plugin "tmux-plugins/tpm"
+Add this plugin to your `~/.tmux.conf`:
 
-# official plugins
+```tmux
 set -g @plugin 'tmux-contrib/tmux-icon'
 ```
+
+And install it by running `<prefix> + I`.
 
 ## Usage
 
@@ -42,7 +42,7 @@ set -g window-status-current-format "#I:#W"
 # After the plugin loads, #I will display as custom icons
 ```
 
-## Configuration Options
+## Configuration
 
 | Option               | Description                                           | Default |
 |----------------------|-------------------------------------------------------|---------|
@@ -155,3 +155,33 @@ set -g @window-flag-icons "* - # ! ~ M Z"
 ```
 
 **Tip**: For best results, use a terminal with a [Nerd Font](https://www.nerdfonts.com/) installed.
+
+## Development
+
+### Prerequisites
+
+Install dependencies using [Nix](https://nixos.org/):
+
+```sh
+nix develop
+```
+
+Or install manually: `bash`, `tmux`, `bats`
+
+### Running Tests
+
+```sh
+bats tests/
+```
+
+### Debugging
+
+Enable trace output with the `DEBUG` environment variable:
+
+```sh
+DEBUG=1 /path/to/tmux-icon/scripts/tmux_icon.sh
+```
+
+## License
+
+GPL-3.0

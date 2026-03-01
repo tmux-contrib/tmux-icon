@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+[[ -z "${DEBUG:-}" ]] || set -x
 
 # tmux-icon plugin entry point.
 #
@@ -8,53 +11,25 @@
 # Configuration:
 #   set -g @window-index-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
 #   set -g @window-flag-icons "󰖯 󰖰 󰀨 󰂞 󰂛 󰃀 󰍉"
-#
-# The @window-index-icons option accepts a space-separated string of custom
-# characters to use for window numbers 0-9. If not set, the plugin
-# does nothing (opt-in behavior).
-#
-# The @window-flag-icons option accepts a space-separated string of custom
-# characters for window flags (*, -, #, !, ~, M, Z). If not set, the plugin
-# does nothing (opt-in behavior). Multiple flags are displayed with spacing
-# between icons for better readability.
-#
-# Examples:
-#   # Circled numbers
-#   set -g @window-index-icons "⓪ ① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨"
-#
-#   # Square nerd font icons
-#   set -g @window-index-icons "󰎣 󰎦 󰎩 󰎬 󰎮 󰎰 󰎵 󰎸 󰎻 󰎾"
-#
-#   # Any custom characters
-#   set -g @window-index-icons "A B C D E F G H I J"
-#
-#   # Window flags
-#   set -g @window-flag-icons "󰖯 󰖰 󰀨 󰂞 󰂛 󰃀 󰍉"
-#
-# Usage:
-#   Before: set -g window-status-format "#I:#W #F"
-#   After:  Window numbers and flags display with your custom icons
 
-_tmux_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_tmux_icon_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+[[ -f "$_tmux_icon_root/scripts/tmux_core.sh" ]] || {
+	echo "tmux-icon: missing tmux_core.sh" >&2
+	exit 1
+}
 
 # shellcheck source=scripts/tmux_core.sh
-source "$_tmux_root_dir/scripts/tmux_core.sh"
+source "$_tmux_icon_root/scripts/tmux_core.sh"
+
+[[ -f "$_tmux_icon_root/scripts/tmux_icon.sh" ]] || {
+	echo "tmux-icon: missing tmux_icon.sh" >&2
+	exit 1
+}
 
 # shellcheck source=scripts/tmux_icon.sh
-source "$_tmux_root_dir/scripts/tmux_icon.sh"
+source "$_tmux_icon_root/scripts/tmux_icon.sh"
 
-# Main entry point for the plugin.
-#
-# Initializes the tmux-icon plugin by updating all tmux options that
-# may contain #I (window index) patterns with custom icons
-# based on the @window-icons configuration.
-#
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   0 on success
 main() {
 	_tmux_icon_update_option "window-status-format"
 	_tmux_icon_update_option "window-status-current-format"

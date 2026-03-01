@@ -1,67 +1,30 @@
 #!/usr/bin/env bash
+# tmux_core.sh — shared library; meant to be sourced, not executed directly.
 
-# Get a tmux option value.
+# Get a tmux option with default fallback
 #
-# Retrieves the value of a global tmux option. If the option is not set,
-# returns the provided default value.
-#
-# Globals:
-#   None
 # Arguments:
-#   $1 - The name of the tmux option to retrieve
-#   $2 - The default value to return if the option is not set
+#   $1 - option name
+#   $2 - (optional) default value
 # Outputs:
-#   The option value or default value to stdout
-# Returns:
-#   0 on success
+#   Option value or default
 _tmux_get_option() {
 	local option="$1"
-	local default_value="$2"
-	local option_value
+	local default="${2:-}"
+	local value
 
-	option_value="$(tmux show-option -gqv "$option")"
-	[[ -n "$option_value" ]] && echo "$option_value" || echo "$default_value"
+	value="$(tmux show-option -gqv "$option" 2>/dev/null)"
+	echo "${value:-$default}"
 }
 
-# Set a tmux option value.
+# Set a tmux global option
 #
-# Sets a global tmux option to the specified value.
-#
-# Globals:
-#   None
 # Arguments:
-#   $1 - The name of the tmux option to set
-#   $2 - The value to set the option to
-# Returns:
-#   0 on success, non-zero on failure
+#   $1 - option name
+#   $2 - option value
 _tmux_set_option() {
 	local option="$1"
 	local value="$2"
 
-	tmux set-option -gq "$option" "$value"
-}
-
-# Interpolate a pattern in content with a value.
-#
-# Replaces a pattern in the given content string with the specified value.
-# This is useful for substituting tmux format strings with actual values.
-#
-# Globals:
-#   None
-# Arguments:
-#   $1 - The content string containing the pattern
-#   $2 - The pattern to replace
-#   $3 - The value to substitute for the pattern
-# Outputs:
-#   The content with the pattern replaced by the value
-# Returns:
-#   0 on success
-_tmux_interpolate() {
-	local content=$1
-	local pattern=$2
-	local value=$3
-
-	content=${content/$pattern/$value}
-
-	echo "$content"
+	tmux set-option -g "$option" "$value"
 }
