@@ -1,6 +1,6 @@
 # tmux-icon
 
-A tmux plugin that displays custom icons (including nerd fonts) for window numbers and flags in the status bar.
+Replace tmux window numbers and flags with custom icons and [Nerd Font](https://www.nerdfonts.com/) glyphs.
 
 ## Installation
 
