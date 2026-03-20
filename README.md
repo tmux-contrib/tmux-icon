@@ -1,6 +1,6 @@
 # tmux-icon
 
-[![Test](https://github.com/tmux-contrib/tmux-icon/actions/workflows/test.yml/badge.svg)](https://github.com/tmux-contrib/tmux-icon/actions/workflows/test.yml) [![Release](https://img.shields.io/github/v/release/tmux-contrib/tmux-icon)](https://github.com/tmux-contrib/tmux-icon/releases) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Test](https://github.com/tmux-contrib/tmux-icon/actions/workflows/test.yml/badge.svg)](https://github.com/tmux-contrib/tmux-icon/actions/workflows/test.yml) [![Release](https://img.shields.io/github/v/release/tmux-contrib/tmux-icon)](https://github.com/tmux-contrib/tmux-icon/releases) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Replace tmux window numbers and flags with custom icons and [Nerd Font](https://www.nerdfonts.com/) glyphs.
 
