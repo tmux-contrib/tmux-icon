@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/tmux-contrib/tmux-icon/compare/v0.2.2...v0.2.3) (2026-11-07)
+
+
+### Bug Fixes
+
+* **ci:** merge with the App token so main gets its CI run ([#42](https://github.com/tmux-contrib/tmux-icon/issues/42)) ([866427f](https://github.com/tmux-contrib/tmux-icon/commit/866427fdeed9f7044fdb42814ab884e192d95aff))
+
 ## [0.2.2](https://github.com/tmux-contrib/tmux-icon/compare/v0.2.1...v0.2.2) (2026-05-04)
 
 
